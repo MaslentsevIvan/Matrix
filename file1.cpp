@@ -45,6 +45,8 @@ bool entering_addit_cond(const int where_called, const int numb);
 void print_mass(int** const data, const int size_x);
 void mipt_cleaning(int*** data, const int quant_rows_0, const int quant_rows_1);
 int entering_matrix(int*** data);
+void print_sum_matrix(int*** data, const int size_x, const int size_y);
+bool checking_sum(int*** data, const int quant_rows_0, const int quant_rows_1);
 
 
 int main()
@@ -57,6 +59,10 @@ int main()
     print_mass(data[0], quant_rows_0);
     printf("\n");
     print_mass(data[1], quant_rows_1);
+    if (checking_sum(data, quant_rows_0, quant_rows_1))
+        print_sum_matrix(data, quant_rows_0, data[0][quant_rows_0][0]);
+    else
+        printf("Можно складывать только матрицы одинакового размера!!!");
     mipt_cleaning(data, quant_rows_0, quant_rows_1);
 }
 
@@ -241,10 +247,45 @@ void mipt_cleaning(int*** data, const int quant_rows_0, const int quant_rows_1)
             quant_rows = quant_rows_0;
         else if (i == 1)
             quant_rows = quant_rows_1;
-        for (int j = 0; j < quant_rows; j++)
+        for (int j = 0; j < quant_rows + 1; j++)
         {
             free(data[i][j]);
         }
+        free(data[i]);
     }
-    free(data);
+}
+
+
+//Сложение матриц
+void print_sum_matrix(int*** data, const int size_x, const int size_y)
+{
+    printf("\n");
+    for (int i = 0; i < size_x; i++)
+    {
+        for (int j = 0; j < size_y; j++)
+        {
+            printf("%d ", data[0][i][j] + data[1][i][j]);
+        }
+        printf("\n");
+    }
+}
+
+
+//Проверка для возможности сложения
+bool checking_sum(int*** data, const int quant_rows_0, const int quant_rows_1)
+{
+    if (quant_rows_0 != quant_rows_1)
+        return 0;
+    if (data[0][quant_rows_0][0] != data[1][quant_rows_0][0])
+        return 0;
+    for (int i = 0; i < 2; i++)
+    {
+        int tmp_column = data[i][quant_rows_0][0];
+        for (int j = 0; j < quant_rows_0; j++)
+        {
+            if (tmp_column != data[i][quant_rows_0][0])
+                return 0;
+        }
+    }
+    return 1;
 }
